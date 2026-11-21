@@ -39,4 +39,7 @@ class StudentRepository(
             Result.failure(e)
         }
     }
+    suspend fun getStudentByCode(code: String): Student? {
+        return studentDao.getStudentByCode(code)
+    }
 }

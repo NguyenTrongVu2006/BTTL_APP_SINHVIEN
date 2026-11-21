@@ -6,10 +6,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-
-    // Thay bằng địa chỉ REST API thực tế khi có máy chủ.
-    private const val BASE_URL = "https://example.com/api/"
-
+    private const val BASE_URL =
+        "https://jsonplaceholder.typicode.com/"
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BASIC
     }

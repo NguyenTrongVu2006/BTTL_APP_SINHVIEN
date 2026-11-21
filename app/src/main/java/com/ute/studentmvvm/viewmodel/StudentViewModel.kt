@@ -20,16 +20,29 @@ class StudentViewModel(
     private val _statusMessage = MutableLiveData<String>()
     val statusMessage: LiveData<String> = _statusMessage
 
+
     fun insert(student: Student) =
         viewModelScope.launch(Dispatchers.IO) {
             try {
+                val existing = repository.getStudentByCode(
+                    student.studentCode
+                )
+
+                if (existing != null) {
+                    _statusMessage.postValue(
+                        "Mã sinh viên ${student.studentCode} đã tồn tại!"
+                    )
+                    return@launch
+                }
+
                 repository.insert(student)
+
                 _statusMessage.postValue(
                     "Đã thêm sinh viên: ${student.fullName}"
                 )
             } catch (e: Exception) {
                 _statusMessage.postValue(
-                    "Lỗi khi thêm: ${e.message}"
+                    "Không thể thêm sinh viên. Kiểm tra mã sinh viên!"
                 )
             }
         }
@@ -51,13 +64,25 @@ class StudentViewModel(
     fun update(student: Student) =
         viewModelScope.launch(Dispatchers.IO) {
             try {
+                val existing = repository.getStudentByCode(
+                    student.studentCode
+                )
+
+                if (existing != null && existing.id != student.id) {
+                    _statusMessage.postValue(
+                        "Mã sinh viên ${student.studentCode} đã tồn tại!"
+                    )
+                    return@launch
+                }
+
                 repository.update(student)
+
                 _statusMessage.postValue(
                     "Đã cập nhật sinh viên: ${student.fullName}"
                 )
             } catch (e: Exception) {
                 _statusMessage.postValue(
-                    "Lỗi khi cập nhật: ${e.message}"
+                    "Không thể cập nhật sinh viên!"
                 )
             }
         }
